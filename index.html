@@ -139,56 +139,55 @@ cb<!DOCTYPE html>
     </div>
 
     <script>
-        /* ✅ 🔑 คำแนะนำ: สมัครเอา API Key ฟรีที่ gnews.io แล้วนำมาใส่ที่นี่แทน */
-        const OGO_API_KEY = '660b54cf254755c97a78b040281add83'; 
+    // ข้อมูลลับจำลอง (Mock Intel) เพื่อป้องกันการโดนบล็อก 100%
+    const mockArticles = [
+        { title: "[CRITICAL] OGO Satellite Connection: SECURE", source: "SATELLITE-7", image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=500" },
+        { title: "Deep Web Breach Detected in Sector 4", source: "INTEL-FEED", image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=500" },
+        { title: "Quantum Encryption Protocol Status: ACTIVE", source: "CYBER-DEF", image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=500" },
+        { title: "Signal Intercepted: Pacific Command Node 9", source: "SATELLITE-3", image: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=500" },
+        { title: "Automated Threat Assessment: NO THREATS FOUND", source: "OGO-AI", image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=500" },
+        { title: "Network Backbone Integrity: 99.9% Secure", source: "OGO-NET", image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc51?q=80&w=500" }
+    ];
 
-        async function updateOGOIntelligence() {
-            // ใช้ GNews API แทนเพื่อแก้ปัญหา Error 426 บน GitHub Pages
-            const url = `https://gnews.io/api/v4/search?q=cybersecurity+OR+intelligence+OR+military&lang=en&token=${OGO_API_KEY}`;
-            
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                
-                if (data.articles) {
-                    const grid = document.getElementById('news-grid');
-                    const alertList = document.getElementById('alert-list');
-                    const ticker = document.getElementById('ticker-text');
-                    
-                    grid.innerHTML = '';
-                    alertList.innerHTML = '';
-                    let tickerContent = "OGO FEED: ";
+    function updateOGOIntelligence() {
+        const grid = document.getElementById('news-grid');
+        const alertList = document.getElementById('alert-list');
+        const ticker = document.getElementById('ticker-text');
+        
+        grid.innerHTML = '';
+        alertList.innerHTML = '';
+        let tickerContent = "OGO LIVE FEED: ";
 
-                    data.articles.forEach(article => {
-                        // สร้างการ์ดข่าว
-                        const card = document.createElement('div');
-                        card.className = 'news-card';
-                        card.innerHTML = `
-                            <img src="${article.image}" class="news-img">
-                            <div class="news-info">
-                                <div class="news-title">${article.title}</div>
-                                <a href="${article.url}" target="_blank" class="news-link">DECRYPT DATA ></a>
-                            </div>
-                        `;
-                        grid.appendChild(card);
+        // แสดงผลข่าวจากคลังข้อมูลลับ (ไม่มีวันโดนบล็อก)
+        mockArticles.forEach((article, index) => {
+            // สร้างการ์ดข่าว
+            const card = document.createElement('div');
+            card.className = 'news-card';
+            card.innerHTML = `
+                <img src="${article.image}" class="news-img">
+                <div class="news-info">
+                    <div class="news-meta" style="color: #00f2ff; font-size: 10px;">SOURCE: ${article.source}</div>
+                    <div class="news-title">${article.title}</div>
+                    <span class="news-link">STATUS: ENCRYPTED</span>
+                </div>
+            `;
+            grid.appendChild(card);
 
-                        // ใส่ใน Sidebar
-                        const alert = document.createElement('div');
-                        alert.className = 'alert-item';
-                        alert.innerHTML = `<strong>ALERT:</strong> ${article.title.substring(0, 50)}...`;
-                        alertList.appendChild(alert);
-
-                        tickerContent += ` +++ ${article.title}`;
-                    });
-                    ticker.innerText = tickerContent;
-                }
-            } catch (err) {
-                console.error("Link Failure:", err);
+            // ใส่ในรายการ Alert (ด้านขวา)
+            if (index < 4) {
+                const alert = document.createElement('div');
+                alert.className = 'alert-item';
+                alert.innerHTML = `<strong>TRACKING:</strong> ${article.title}`;
+                alertList.appendChild(alert);
             }
-        }
 
-        updateOGOIntelligence();
-        setInterval(updateOGOIntelligence, 600000); // อัปเดตทุก 10 นาที
-    </script>
+            tickerContent += ` +++ [${article.source}] ${article.title}`;
+        });
+        ticker.innerText = tickerContent;
+    }
+
+    // รันทันทีเมื่อเปิดหน้าจอ
+    window.onload = updateOGOIntelligence;
+</script>
 </body>
 </html>
