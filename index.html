@@ -54,48 +54,58 @@
     </div>
 
     <script>
-        // 1. นาฬิการะบบ
-        function updateTime() {
-            const now = new Date();
-            document.getElementById('system-time').innerText = now.toUTCString().split(' ')[4] + " UTC";
-        }
-        setInterval(updateTime, 1000);
+      // --- OGO INTELLIGENCE ENGINE V3 ---
+async function fetchWithRetry() {
+    const stream = document.getElementById("intel-stream");
+    // แหล่งข่าว 1: Cybersecurity Search
+    const rss = 'https://news.google.com/rss/search?q=cybersecurity+vulnerability+thailand&hl=th&gl=TH&ceid=TH:th';
+    
+    // รายชื่อ Proxy สำรอง (ถ้าตัวแรกตาย จะลองตัวถัดไป)
+    const proxies = [
+        `https://api.allorigins.win/get?url=${encodeURIComponent(rss)}`,
+        `https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(rss)}`
+    ];
 
-        // 2. ระบบดึงข่าว (New Engine: No-Cache)
-        async function getIntel() {
-            const stream = document.getElementById("intel-stream");
-            // เปลี่ยน Keyword เป็น 'Cybersecurity' เพื่อข่าวที่สดใหม่เสมอ
-            const rss = 'https://news.google.com/rss/search?q=cybersecurity+threats&hl=th&gl=TH&ceid=TH:th';
+    for (let proxy of proxies) {
+        try {
+            console.log("OGO: Attempting link via " + proxy);
+            const response = await fetch(proxy);
+            const data = await response.json();
             
-            try {
-                // ใช้ Proxy สำรองหาก AllOrigins ล่ม
-                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(rss)}&td=${Date.now()}`);
-                const data = await response.json();
-                
-                const parser = new DOMParser();
-                const xml = parser.parseFromString(data.contents, "text/xml");
-                const items = xml.querySelectorAll("item");
+            // ตรวจสอบโครงสร้างข้อมูล (บาง Proxy ส่งมาไม่เหมือนกัน)
+            const content = data.contents || data; 
+            
+            const parser = new DOMParser();
+            const xml = parser.parseFromString(content, "text/xml");
+            const items = xml.querySelectorAll("item");
 
+            if (items.length > 0) {
                 let html = "";
-                for(let i=0; i<6; i++) {
+                for(let i=0; i < Math.min(items.length, 6); i++) {
                     const title = items[i].querySelector("title").textContent;
                     const link = items[i].querySelector("link").textContent;
                     const date = items[i].querySelector("pubDate").textContent;
-
                     html += `
                         <div class="intel-card">
                             <a href="${link}" target="_blank">${title}</a>
-                            <div class="intel-meta">SOURCE: GLOBAL_NET | TIME: ${date}</div>
+                            <div class="intel-meta">NODE_ACTIVE: ${date}</div>
                         </div>
                     `;
                 }
                 stream.innerHTML = html;
-            } catch (e) {
-                stream.innerHTML = "<div style='color:red; text-align:center;'>CRITICAL ERROR: DATA_STREAM_OFFLINE</div>";
+                console.log("OGO: Data Stream SECURED.");
+                return; // ถ้าสำเร็จแล้วให้หยุดการวนลูปทันที
             }
+        } catch (e) {
+            console.warn("OGO: Node failed, switching to backup...");
         }
+    }
+    
+    // ถ้าลองทุกทางแล้วยังไม่ได้
+    stream.innerHTML = "<div style='color:red; text-align:center;'>CRITICAL: ALL NODES OFFLINE. CHECK FIREWALL SETTINGS.</div>";
+}
 
-        window.onload = getIntel;
+window.onload = fetchWithRetry;
     </script>
 </body>
 </html>
