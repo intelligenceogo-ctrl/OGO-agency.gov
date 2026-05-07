@@ -3,195 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OGO | OVERSIGHT GLOBAL AGENCY</title>
+    <title>OGO | GLOBAL OVERSIGHT COMMAND</title>
     <style>
-        :root {
-            --ogo-cyan: #00f2ff;
-            --ogo-dark: #020617;
-            --ogo-card: #0f172a;
-        }
+        :root { --neon: #00f2ff; --bg: #020617; --card: #0f172a; }
+        body { background: var(--bg); color: #f8fafc; font-family: 'Courier New', monospace; margin: 0; padding: 20px; }
+        
+        /* Header Section */
+        .ogo-header { border-bottom: 2px solid var(--neon); padding: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .logo-text { color: var(--neon); font-size: 24px; font-weight: bold; letter-spacing: 3px; }
+        
+        /* Map Section */
+        .map-box { position: relative; width: 100%; height: 350px; background: #000; border: 1px solid #1e293b; border-radius: 8px; overflow: hidden; margin-bottom: 20px; }
+        .world-map { width: 100%; height: 100%; opacity: 0.3; background: url('https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_with_nations.svg') center/cover; filter: invert(1) hue-rotate(180deg); }
+        .node { position: absolute; width: 8px; height: 8px; background: var(--neon); border-radius: 50%; box-shadow: 0 0 10px var(--neon); animation: pulse 2s infinite; }
+        .n-bkk { top: 60%; left: 78%; } .n-uk { top: 30%; left: 48%; }
+        @keyframes pulse { 0% {transform: scale(1); opacity: 1;} 100% {transform: scale(4); opacity: 0;} }
 
-        body {
-            background-color: var(--ogo-dark);
-            color: #f8fafc;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-        }
-
-        .header {
-            border-bottom: 2px solid var(--ogo-cyan);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .agency-title {
-            color: var(--ogo-cyan);
-            letter-spacing: 5px;
-            font-weight: bold;
-            margin: 0;
-        }
-
-        /* --- Operation Map Styles --- */
-        .map-container {
-            position: relative;
-            width: 100%;
-            height: 400px;
-            background: #000;
-            border: 1px solid #1e293b;
-            border-radius: 8px;
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-
-        .world-map {
-            width: 100%;
-            height: 100%;
-            opacity: 0.4;
-            background-image: url('https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_with_nations.svg');
-            background-size: cover;
-            filter: invert(1) hue-rotate(180deg) brightness(0.8);
-        }
-
-        .node {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: var(--ogo-cyan);
-            border-radius: 50%;
-            box-shadow: 0 0 10px var(--ogo-cyan);
-            animation: pulse 2s infinite;
-        }
-        .node-bkk { top: 60%; left: 78%; }
-        .node-mun { top: 30%; left: 48%; }
-        .node-dxb { top: 45%; left: 63%; }
-
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 1; }
-            70% { transform: scale(3); opacity: 0; }
-            100% { transform: scale(1); opacity: 0; }
-        }
-
-        /* --- News Feed Styles --- */
-        #news-container {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-        }
-
-        .news-item {
-            background: var(--ogo-card);
-            border-left: 4px solid var(--ogo-cyan);
-            padding: 15px;
-            border-radius: 4px;
-            transition: 0.3s;
-        }
-
-        .news-item:hover {
-            background: #1e293b;
-            transform: translateX(10px);
-        }
-
-        .news-item a {
-            color: var(--ogo-cyan);
-            text-decoration: none;
-            font-size: 1.1rem;
-            font-weight: bold;
-        }
-
-        .status-tag {
-            font-family: monospace;
-            font-size: 12px;
-            color: #64748b;
-            margin-top: 5px;
-        }
-
-        .loading {
-            text-align: center;
-            color: var(--ogo-cyan);
-            font-family: monospace;
-            padding: 50px;
-        }
+        /* News Feed Section */
+        .feed-title { background: var(--neon); color: var(--bg); padding: 5px 15px; display: inline-block; font-weight: bold; margin-bottom: 15px; }
+        #intel-stream { display: grid; gap: 10px; }
+        .intel-card { background: var(--card); border-left: 4px solid var(--neon); padding: 15px; transition: 0.2s; cursor: pointer; }
+        .intel-card:hover { background: #1e293b; transform: scale(1.01); }
+        .intel-card a { color: var(--neon); text-decoration: none; font-size: 16px; font-weight: bold; display: block; margin-bottom: 5px; }
+        .intel-meta { font-size: 11px; color: #64748b; }
+        
+        .loading-text { color: var(--neon); text-align: center; padding: 40px; animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0.3; } }
     </style>
 </head>
 <body>
 
-    <div class="header">
+    <div class="ogo-header">
         <div>
-            <h1 class="agency-title">OFFICE OF GLOBAL OVERSIGHT</h1>
-            <small>LEVEL 9 CLEARANCE REQUIRED | OPERATIVE: MONGKONLPORN</small>
+            <div class="logo-text">OGO // COMMAND_CENTER</div>
+            <div style="font-size: 12px; color: var(--neon)">OPERATIVE: MONGKONLPORN | CLEARANCE: LEVEL 9</div>
         </div>
-        <div id="utc-clock" style="font-family: monospace; color: var(--ogo-cyan);"></div>
+        <div id="system-time" style="color: var(--neon)"></div>
     </div>
 
-    <div class="map-container">
+    <div class="map-box">
         <div class="world-map"></div>
-        <div class="node node-bkk"></div>
-        <div class="node node-mun"></div>
-        <div class="node node-dxb"></div>
-        <div style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.7); padding: 5px; font-size: 10px; color: var(--ogo-cyan); border: 1px solid var(--ogo-cyan);">
-            SCANNING GLOBAL NODES... ACTIVE
-        </div>
+        <div class="node n-bkk" title="HQ: THAILAND"></div>
+        <div class="node n-uk" title="NODE: MANCHESTER"></div>
+        <div style="position: absolute; top: 10px; left: 10px; color: var(--neon); font-size: 10px; background: rgba(0,0,0,0.5); padding: 5px;">SYSTEM STATUS: ACTIVE</div>
     </div>
 
-    <h2 style="border-left: 10px solid var(--ogo-cyan); padding-left: 10px;">INTELLIGENCE FEED</h2>
-    
-    <div id="news-container">
-        <div class="loading">INITIATING SECURE CONNECTION...</div>
+    <div class="feed-title">LIVE_INTELLIGENCE_FEED</div>
+    <div id="intel-stream">
+        <div class="loading-text">BYPASSING FIREWALLS... PLEASE WAIT</div>
     </div>
 
     <script>
-        // 1. ระบบนาฬิกา UTC
-        function updateClock() {
+        // 1. นาฬิการะบบ
+        function updateTime() {
             const now = new Date();
-            document.getElementById('utc-clock').innerText = "SYSTEM TIME: " + now.toUTCString().split(' ')[4] + " UTC";
+            document.getElementById('system-time').innerText = now.toUTCString().split(' ')[4] + " UTC";
         }
-        setInterval(updateClock, 1000);
-        updateClock();
+        setInterval(updateTime, 1000);
 
-        // 2. ระบบดึงข่าวกรอง (แก้ปัญหา Chrome/CORS)
-        async function fetchOgoNews() {
-            const newsContainer = document.getElementById("news-container");
-            const rssUrl = 'https://news.google.com/rss/search?q=cybersecurity+threats&hl=en-US&gl=US&ceid=US:en';
+        // 2. ระบบดึงข่าว (New Engine: No-Cache)
+        async function getIntel() {
+            const stream = document.getElementById("intel-stream");
+            // เปลี่ยน Keyword เป็น 'Cybersecurity' เพื่อข่าวที่สดใหม่เสมอ
+            const rss = 'https://news.google.com/rss/search?q=cybersecurity+threats&hl=th&gl=TH&ceid=TH:th';
             
-            // ใช้ AllOrigins Proxy ที่เสถียรที่สุดสำหรับ Chrome
-            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`;
-
             try {
-                const response = await fetch(proxyUrl);
+                // ใช้ Proxy สำรองหาก AllOrigins ล่ม
+                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(rss)}&td=${Date.now()}`);
                 const data = await response.json();
                 
                 const parser = new DOMParser();
-                const xmlDoc = parser.parseFromString(data.contents, "text/xml");
-                const items = xmlDoc.querySelectorAll("item");
+                const xml = parser.parseFromString(data.contents, "text/xml");
+                const items = xml.querySelectorAll("item");
 
                 let html = "";
-                // ดึง 6 ข่าวล่าสุด
-                for(let i = 0; i < 6; i++) {
+                for(let i=0; i<6; i++) {
                     const title = items[i].querySelector("title").textContent;
                     const link = items[i].querySelector("link").textContent;
                     const date = items[i].querySelector("pubDate").textContent;
 
                     html += `
-                        <div class="news-item">
+                        <div class="intel-card">
                             <a href="${link}" target="_blank">${title}</a>
-                            <div class="status-tag">SOURCE: GLOBAL_INTEL | TIMESTAMP: ${date}</div>
+                            <div class="intel-meta">SOURCE: GLOBAL_NET | TIME: ${date}</div>
                         </div>
                     `;
                 }
-                newsContainer.innerHTML = html;
-                console.log("OGO Intelligence: Stream Restored.");
-            } catch (error) {
-                console.error("Critical Error:", error);
-                newsContainer.innerHTML = "<div class='loading' style='color: red;'>CRITICAL ERROR: ACCESS TO DATA STREAM DENIED.</div>";
+                stream.innerHTML = html;
+            } catch (e) {
+                stream.innerHTML = "<div style='color:red; text-align:center;'>CRITICAL ERROR: DATA_STREAM_OFFLINE</div>";
             }
         }
 
-        // เริ่มภารกิจเมื่อหน้าเว็บโหลดเสร็จ
-        window.onload = fetchOgoNews;
+        window.onload = getIntel;
     </script>
 </body>
 </html>
