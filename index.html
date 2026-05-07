@@ -138,56 +138,66 @@ cb<!DOCTYPE html>
         <div class="ticker-content" id="ticker-text">OGO GLOBAL OVERSIGHT — STATUS: SECURE — </div>
     </div>
 
-    <script>
-    // ข้อมูลลับจำลอง (Mock Intel) เพื่อป้องกันการโดนบล็อก 100%
-    const mockArticles = [
-        { title: "[CRITICAL] OGO Satellite Connection: SECURE", source: "SATELLITE-7", image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=500" },
-        { title: "Deep Web Breach Detected in Sector 4", source: "INTEL-FEED", image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=500" },
-        { title: "Quantum Encryption Protocol Status: ACTIVE", source: "CYBER-DEF", image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=500" },
-        { title: "Signal Intercepted: Pacific Command Node 9", source: "SATELLITE-3", image: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=500" },
-        { title: "Automated Threat Assessment: NO THREATS FOUND", source: "OGO-AI", image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=500" },
-        { title: "Network Backbone Integrity: 99.9% Secure", source: "OGO-NET", image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc51?q=80&w=500" }
-    ];
-
-    function updateOGOIntelligence() {
+  <script>
+    async function updateOGOIntelligence() {
         const grid = document.getElementById('news-grid');
         const alertList = document.getElementById('alert-list');
         const ticker = document.getElementById('ticker-text');
-        
-        grid.innerHTML = '';
-        alertList.innerHTML = '';
-        let tickerContent = "OGO LIVE FEED: ";
 
-        // แสดงผลข่าวจากคลังข้อมูลลับ (ไม่มีวันโดนบล็อก)
-        mockArticles.forEach((article, index) => {
-            // สร้างการ์ดข่าว
-            const card = document.createElement('div');
-            card.className = 'news-card';
-            card.innerHTML = `
-                <img src="${article.image}" class="news-img">
-                <div class="news-info">
-                    <div class="news-meta" style="color: #00f2ff; font-size: 10px;">SOURCE: ${article.source}</div>
-                    <div class="news-title">${article.title}</div>
-                    <span class="news-link">STATUS: ENCRYPTED</span>
-                </div>
-            `;
-            grid.appendChild(card);
+        // ใช้ RSS Feed จากแหล่งข่าวจริง ผ่านตัวแปลง RSS2JSON เพื่อข้ามการบล็อก (CORS)
+        // แหล่งข่าว: BBC World และ Security Affairs
+        const rssUrl = encodeURIComponent('https://news.google.com/rss/search?q=cybersecurity+intelligence+military&hl=en-US&gl=US&ceid=US:en');
+        const url = `https://api.rss2json.com/v1/api.json?rss_url=${rssUrl}`;
 
-            // ใส่ในรายการ Alert (ด้านขวา)
-            if (index < 4) {
-                const alert = document.createElement('div');
-                alert.className = 'alert-item';
-                alert.innerHTML = `<strong>TRACKING:</strong> ${article.title}`;
-                alertList.appendChild(alert);
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+
+            if (data.status === 'ok') {
+                grid.innerHTML = '';
+                alertList.innerHTML = '';
+                let tickerContent = "OGO GLOBAL FEED: ";
+
+                data.items.forEach((item, index) => {
+                    // 1. สร้างการ์ดข่าวหลัก
+                    const card = document.createElement('div');
+                    card.className = 'news-card';
+                    
+                    // สุ่มรูปภาพเท่ๆ เพราะ RSS บางที่ไม่มีรูปมาให้
+                    const thumb = item.thumbnail || `https://picsum.photos/seed/${index + 50}/400/225`;
+                    
+                    card.innerHTML = `
+                        <img src="${thumb}" class="news-img">
+                        <div class="news-info">
+                            <div class="news-meta" style="color: #00f2ff; font-size: 10px;">SOURCE: ${item.author || 'INTEL-SOURCE'}</div>
+                            <div class="news-title">${item.title}</div>
+                            <a href="${item.link}" target="_blank" class="news-link">ACCESS CLASSIFIED FILE ></a>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+
+                    // 2. ใส่ในรายการ Critical Alerts (ขวา)
+                    if (index < 5) {
+                        const alert = document.createElement('div');
+                        alert.className = 'alert-item';
+                        alert.innerHTML = `<strong>ALERT:</strong> ${item.title.substring(0, 60)}...`;
+                        alertList.appendChild(alert);
+                    }
+
+                    tickerContent += ` +++ ${item.title}`;
+                });
+                ticker.innerText = tickerContent;
             }
-
-            tickerContent += ` +++ [${article.source}] ${article.title}`;
-        });
-        ticker.innerText = tickerContent;
+        } catch (err) {
+            console.error("Link Failure:", err);
+            grid.innerHTML = '<div style="color:red; text-align:center;">SIGNAL INTERRUPTED: CHECK NETWORK CONNECTION</div>';
+        }
     }
 
-    // รันทันทีเมื่อเปิดหน้าจอ
-    window.onload = updateOGOIntelligence;
+    // รันระบบ
+    updateOGOIntelligence();
+    // อัปเดตทุก 15 นาที เพื่อไม่ให้โดนเซิร์ฟเวอร์ดีดออก
+    setInterval(updateOGOIntelligence, 900000); 
 </script>
 </body>
 </html>
