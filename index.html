@@ -56,21 +56,38 @@
     </div>
 
     <script>
-        // ระบบนาฬิกา Real-time
-        setInterval(() => {
-            document.getElementById('clock').innerText = new Date().toLocaleTimeString();
-        }, 1000);
+      const API_KEY = ccb0515ea35e497582b97b4ceeae7ab6
+const newsUrl = `https://newsapi.org/v2/top-headlines?country=th&category=technology&apiKey=${API_KEY}`;
 
-        // ฟังก์ชันจำลองการดึงข้อมูล (ในระบบจริงจะใช้ Fetch API ดึงจาก News API)
-        function updateFeeds() {
-            const mediaFeed = document.getElementById('media-feed');
-            const newEvent = document.createElement('div');
-            newEvent.className = 'news-item';
-            newEvent.innerHTML = `<span class="tag tag-intel">LIVE</span> <strong>[INTEL]</strong> Security sweep completed in Sector ${Math.floor(Math.random()*10)}. No anomalies detected.`;
-            mediaFeed.prepend(newEvent);
-        }
+async function fetchGlobalNews() {
+    try {
+        const response = await fetch(newsUrl); // ส่งคำสั่งดึงข้อมูล
+        const data = await response.json();    // แปลงข้อมูลเป็นรูปแบบที่อ่านง่าย
+        displayNews(data.articles);            // ส่งข้อมูลไปแสดงผลบนหน้าจอ
+    } catch (error) {
+        console.error("การดึงข้อมูลล้มเหลว:", error);
+    }
+}
 
-        setInterval(updateFeeds, 10000); // อัปเดตทุก 10 วินาที
+function displayNews(articles) {
+    const feed = document.getElementById('media-feed');
+    feed.innerHTML = ''; // ล้างข้อมูลเก่าออกก่อน
+    
+    articles.forEach(article => {
+        const item = document.createElement('div');
+        item.className = 'news-item';
+        // แสดงชื่อหัวข้อข่าวและลิงก์สำหรับอ่านต่อ
+        item.innerHTML = `
+            <strong>[${article.source.name}]</strong> ${article.title}
+            <br><small>${new Date(article.publishedAt).toLocaleString()}</small>
+            <a href="${article.url}" target="_blank" style="color:#00f2ff; font-size:10px;"> [READ MORE]</a>
+        `;
+        feed.appendChild(item);
+    });
+}
+
+// สั่งให้ทำงานทันทีเมื่อเปิดหน้าเว็บ
+fetchGlobalNews();
     </script>
 </body>
 </html>
