@@ -2,7 +2,8 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <title>OGO | GLOBAL INTELLIGENCE NEWS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OGO | GLOBAL INTELLIGENCE NEWS CENTER</title>
     <style>
         :root {
             --neon-blue: #00f2ff;
@@ -11,142 +12,168 @@
             --panel-bg: rgba(10, 20, 35, 0.9);
         }
 
+        * { box-sizing: border-box; }
+
         body {
-            background: var(--dark-bg);
+            background-color: var(--dark-bg);
             color: #fff;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            overflow-x: hidden;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
         }
 
-        /* Top Header */
-        .header {
+        /* --------------------------------------------------
+           LOGO BACKGROUND (โลโก้ข้างหลัง)
+        -------------------------------------------------- */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            /* ✅ แก้ไขชื่อไฟล์รูปภาพโลโก้ของคุณที่นี่ (ต้องอัปโหลดขึ้น GitHub ก่อน) */
+            background-image: url(''); 
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 35%; /* ปรับขนาดโลโก้ */
+            opacity: 0.12;       /* ปรับความจาง (0.1 - 0.2 กำลังดี) */
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Header */
+        header {
             background: #000;
             padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 3px solid var(--neon-blue);
-            box-shadow: 0 0 20px var(--neon-blue);
+            border-bottom: 2px solid var(--neon-blue);
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
         }
 
-        .logo { font-size: 32px; font-weight: 900; letter-spacing: 8px; }
-        .status-tag { color: var(--neon-blue); font-family: monospace; }
+        .logo-text { font-size: 28px; font-weight: 900; letter-spacing: 5px; text-transform: uppercase; }
+        .system-status { font-family: monospace; color: var(--neon-blue); font-size: 14px; }
 
-        /* Main Content Grid */
-        .container {
+        /* Main Grid */
+        .main-container {
+            flex: 1;
             display: grid;
             grid-template-columns: 3fr 1fr;
             gap: 20px;
             padding: 20px;
-            height: calc(100vh - 120px);
+            overflow: hidden;
         }
 
         /* News Section */
-        #news-grid {
+        .news-section { overflow-y: auto; padding-right: 10px; }
+        .news-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 20px;
-            overflow-y: auto;
-            padding-right: 10px;
         }
 
         .news-card {
             background: var(--panel-bg);
-            border: 1px solid #1a2635;
-            border-radius: 5px;
+            border: 1px solid rgba(0, 242, 255, 0.1);
+            border-radius: 8px;
             overflow: hidden;
             transition: 0.3s;
         }
 
         .news-card:hover { border-color: var(--neon-blue); transform: translateY(-5px); }
+        .news-img { width: 100%; height: 180px; object-fit: cover; background: #111; }
+        .news-info { padding: 15px; }
+        .news-meta { font-size: 11px; color: var(--neon-blue); margin-bottom: 8px; text-transform: uppercase; }
+        .news-title { font-size: 17px; font-weight: bold; margin-bottom: 12px; line-height: 1.4; }
+        .news-link { color: var(--neon-blue); text-decoration: none; font-size: 13px; font-weight: bold; }
 
-        .news-image {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            border-bottom: 1px solid #1a2635;
-        }
-
-        .news-content { padding: 15px; }
-        .news-title { font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #fff; line-height: 1.4; }
-        .news-meta { font-size: 12px; color: var(--neon-blue); margin-bottom: 8px; }
-
-        /* Sidebar / Alerts */
+        /* Sidebar Alerts */
         .sidebar {
             background: var(--panel-bg);
-            border-left: 1px solid #1a2635;
-            padding: 15px;
+            border: 1px solid rgba(255, 0, 68, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
         }
 
+        .sidebar-title { color: var(--neon-red); font-size: 18px; font-weight: bold; margin-bottom: 20px; }
+        .alert-list { overflow-y: auto; flex: 1; }
         .alert-item {
-            background: rgba(255, 0, 68, 0.1);
-            border-left: 4px solid var(--neon-red);
-            padding: 10px;
+            background: rgba(255, 0, 68, 0.05);
+            border-left: 3px solid var(--neon-red);
+            padding: 12px;
             margin-bottom: 15px;
-            font-size: 14px;
+            font-size: 13px;
             animation: pulse 2s infinite;
         }
 
-        @keyframes pulse { 0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.8; } }
+        @keyframes pulse { 0% { opacity: 0.7; } 50% { opacity: 1; } 100% { opacity: 0.7; } }
 
         /* Bottom Ticker */
-        .ticker-wrap {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background: #ff0044;
-            color: #fff;
-            padding: 10px 0;
+        .ticker-container {
+            background: var(--neon-red);
+            height: 40px;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .ticker-content {
+            display: inline-block;
+            padding-left: 100%;
+            animation: ticker 40s linear infinite;
             font-weight: bold;
             text-transform: uppercase;
+            font-size: 14px;
         }
 
-        .ticker {
-            display: inline-block;
-            white-space: nowrap;
-            padding-left: 100%;
-            animation: ticker 30s linear infinite;
-        }
+        @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-        @keyframes ticker {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(-100%, 0); }
-        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div class="logo">OGO INTELLIGENCE</div>
-        <div class="status-tag">SYSTEM STATUS: ACTIVE // ENCRYPTION: AES-256</div>
-    </div>
+    <header>
+        <div class="logo-text">OGO Intelligence</div>
+        <div class="system-status">● MONITORING GLOBAL THREATS | CLEARANCE: L9</div>
+    </header>
 
-    <div class="container">
-        <div id="news-grid">
-            <div style="padding: 20px;">CONNECTING TO GLOBAL SATELLITES...</div>
+    <div class="main-container">
+        <div class="news-section">
+            <div id="news-grid" class="news-grid">
+                <div style="grid-column: 1/-1; text-align: center; margin-top: 100px; color: var(--neon-blue);">
+                    CONNECTING TO SECURE NETWORK...
+                </div>
+            </div>
         </div>
 
         <div class="sidebar">
-            <h3 style="color: var(--neon-red);">⚠️ CRITICAL ALERTS</h3>
-            <div id="alert-zone">
-                <div class="alert-item">SCANNING FOR HIGH-LEVEL THREATS...</div>
+            <div class="sidebar-title">⚠️ CRITICAL ALERTS</div>
+            <div id="alert-list" class="alert-list">
+                <div class="alert-item">SCANNING DATA STREAMS...</div>
             </div>
         </div>
     </div>
 
-    <div class="ticker-wrap">
-        <div class="ticker" id="bottom-ticker">
-            OGO GLOBAL OVERSIGHT — SECURING THE FUTURE — MISSION ACCOMPLISHED: OPERATION JUPITER — MONITORING GLOBAL ASSETS...
+    <div class="ticker-container">
+        <div class="ticker-content" id="ticker-text">
+            OGO GLOBAL OVERSIGHT — SECURING THE WORLD — STATUS: ACTIVE — 
         </div>
     </div>
 
     <script>
-        // 🔑 ใส่ API Key ของคุณที่ได้จาก newsapi.org
-        const OGO_API_KEY = 'YOUR_NEWS_API_KEY_HERE'; 
+    
+        const OGO_API_KEY = ccb0515ea35e497582b97b4ceeae7ab6
 
-        async function fetchOgoNews() {
-            // ดึงข่าวหัวข้อ Technology และ Security
+        async function updateOGOIntelligence() {
             const url = `https://newsapi.org/v2/everything?q=cybersecurity+OR+intelligence+OR+military&language=en&sortBy=publishedAt&apiKey=${OGO_API_KEY}`;
             
             try {
@@ -155,50 +182,44 @@
                 
                 if (data.status === "ok") {
                     const grid = document.getElementById('news-grid');
-                    const alertZone = document.getElementById('alert-zone');
-                    const ticker = document.getElementById('bottom-ticker');
+                    const alertList = document.getElementById('alert-list');
+                    const ticker = document.getElementById('ticker-text');
                     
                     grid.innerHTML = '';
-                    alertZone.innerHTML = '';
-                    let tickerText = "";
+                    alertList.innerHTML = '';
+                    let tickerContent = "OGO FEED: ";
 
-                    data.articles.slice(0, 12).forEach((article, index) => {
-                        // สร้างการ์ดข่าว
+                    data.articles.slice(0, 15).forEach(article => {
                         const card = document.createElement('div');
                         card.className = 'news-card';
-                        
-                        const imgUrl = article.urlToImage || 'https://via.placeholder.com/300x180/050a10/00f2ff?text=OGO+INTEL';
+                        const image = article.urlToImage || 'https://via.placeholder.com/400x225/050a10/00f2ff?text=OGO+INTEL';
                         
                         card.innerHTML = `
-                            <img src="${imgUrl}" class="news-image">
-                            <div class="news-content">
-                                <div class="news-meta">${article.source.name} | ${new Date(article.publishedAt).toLocaleDateString()}</div>
+                            <img src="${image}" class="news-img">
+                            <div class="news-info">
+                                <div class="news-meta">${article.source.name}</div>
                                 <div class="news-title">${article.title}</div>
-                                <a href="${article.url}" target="_blank" style="color: var(--neon-blue); text-decoration: none; font-size: 14px;">READ CLASSIFIED FILE ></a>
+                                <a href="${article.url}" target="_blank" class="news-link">ACCESS FILE ></a>
                             </div>
                         `;
                         grid.appendChild(card);
 
-                        // ถ้าเป็นข่าวที่มีคำเสี่ยงสูง ให้ไปโชว์ที่ช่อง Alert
-                        if (["attack", "war", "breach", "threat"].some(word => article.title.toLowerCase().includes(word))) {
+                        const highRisk = ["attack", "war", "breach", "threat", "hack"];
+                        if (highRisk.some(word => article.title.toLowerCase().includes(word))) {
                             const alert = document.createElement('div');
                             alert.className = 'alert-item';
                             alert.innerHTML = `<strong>URGENT:</strong> ${article.title}`;
-                            alertZone.appendChild(alert);
+                            alertList.appendChild(alert);
                         }
-
-                        tickerText += ` +++ ${article.title}`;
+                        tickerContent += ` +++ ${article.title}`;
                     });
-
-                    ticker.innerText = tickerText;
+                    ticker.innerText = tickerContent;
                 }
-            } catch (error) {
-                console.error("Link Lost:", error);
-            }
+            } catch (err) { console.error("Error:", err); }
         }
 
-        fetchOgoNews();
-        setInterval(fetchOgoNews, 600000); // อัปเดตทุก 1นาที
+        updateOGOIntelligence();
+        setInterval(updateOGOIntelligence, 600000);
     </script>
 </body>
 </html>
